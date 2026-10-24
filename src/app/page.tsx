@@ -2,13 +2,16 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getWorkout, sequenciaPorPlano } from "@/data/workouts";
+import type { WorkoutId } from "@/data/types";
 import { emAdaptacao, proximoTreino, useAppState } from "@/lib/storage";
 
 export default function Hoje() {
   const router = useRouter();
   const { state, carregado } = useAppState();
+  // null = segue a sugestão da sequência; o usuário pode escolher qualquer treino.
+  const [escolhido, setEscolhido] = useState<WorkoutId | null>(null);
 
   useEffect(() => {
     if (carregado && !state.aceitouAviso) router.replace("/boas-vindas");
@@ -16,7 +19,8 @@ export default function Hoje() {
 
   if (!carregado || !state.aceitouAviso) return null;
 
-  const workout = getWorkout(proximoTreino(state))!;
+  const sugerido = proximoTreino(state);
+  const workout = getWorkout(escolhido ?? sugerido)!;
   const adaptacao = emAdaptacao(state);
   const seq = sequenciaPorPlano[state.plano];
   const ultimo = state.historico.at(-1);
@@ -24,12 +28,51 @@ export default function Hoje() {
   return (
     <div className="flex flex-col gap-6">
       <header>
-        <p className="text-sm text-muted">Próximo treino</p>
+        <p className="text-sm text-muted">
+          {workout.id === sugerido ? "Próximo treino" : "Treino escolhido"}
+        </p>
         <h1 className="text-3xl font-bold">
           {workout.id} · {workout.nome}
         </h1>
         <p className="text-muted">{workout.foco}</p>
       </header>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-sm font-semibold text-muted">Qual treino hoje?</h2>
+        <div className="flex gap-2" role="radiogroup" aria-label="Escolha o treino">
+          {seq.map((id) => {
+            const ativo = id === workout.id;
+            return (
+              <button
+                key={id}
+                type="button"
+                role="radio"
+                aria-checked={ativo}
+                onClick={() => setEscolhido(id)}
+                className={`relative flex size-12 items-center justify-center rounded-xl text-lg font-bold ${
+                  ativo
+                    ? "bg-accent text-accent-ink"
+                    : "bg-surface-2 text-muted"
+                }`}
+              >
+                {id}
+                {id === sugerido && (
+                  <span
+                    aria-hidden
+                    className={`absolute -top-1 -right-1 size-3 rounded-full border-2 border-background ${
+                      ativo ? "bg-foreground" : "bg-accent"
+                    }`}
+                  />
+                )}
+              </button>
+            );
+          })}
+        </div>
+        <p className="text-xs text-muted">
+          O ponto marca o sugerido pela sequência. Escolheu outro? A sequência
+          continua a partir dele.
+        </p>
+      </section>
 
       <div className="flex flex-col gap-4 rounded-3xl border border-border bg-surface p-5">
         <div className="flex gap-6 text-sm">
@@ -46,32 +89,15 @@ export default function Hoje() {
           href={`/treinos/${workout.id}`}
           className="rounded-2xl bg-accent py-4 text-center text-lg font-bold text-accent-ink"
         >
-          Começar
+          Começar treino {workout.id}
         </Link>
       </div>
 
-      <section className="flex flex-col gap-2">
-        <h2 className="text-sm font-semibold text-muted">Sua sequência</h2>
-        <div className="flex gap-2">
-          {seq.map((id) => (
-            <span
-              key={id}
-              className={`flex size-11 items-center justify-center rounded-xl text-lg font-bold ${
-                id === workout.id
-                  ? "bg-accent text-accent-ink"
-                  : "bg-surface-2 text-muted"
-              }`}
-            >
-              {id}
-            </span>
-          ))}
-        </div>
-        <p className="text-sm text-muted">
-          {ultimo
-            ? `Último treino: ${ultimo.workoutId} em ${new Date(ultimo.data).toLocaleDateString("pt-BR")}. ${state.historico.length} no total.`
-            : "Nos dias sem treino, caminhe de 30 a 45 minutos."}
-        </p>
-      </section>
+      <p className="text-sm text-muted">
+        {ultimo
+          ? `Último treino: ${ultimo.workoutId} em ${new Date(ultimo.data).toLocaleDateString("pt-BR")}. ${state.historico.length} no total.`
+          : "Nos dias sem treino, caminhe de 30 a 45 minutos."}
+      </p>
     </div>
   );
 }

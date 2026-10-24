@@ -45,7 +45,7 @@ docs/plano.md                Plano do produto
 - **Aviso médico obrigatório.** O texto fica em `AVISO_MEDICO` (`src/data/guide.ts`) e aparece no onboarding (com checkbox), no guia e no fim de cada artigo. Nunca remover.
 - **Sem prescrição.** O app não indica dose de remédio, dieta, calorias nem gramas de proteína para o usuário. Pode citar referências gerais sempre dizendo para validar com nutricionista ou médico.
 - **Plano padrão: 3x por semana** (A Empurrar, B Puxar, C Perna). O 4x adiciona D (Superior + braços).
-- **Sequência, não dias fixos.** Se o usuário falta, o próximo treino continua sendo o que ele não fez (`proximoIndex` em `storage.ts`).
+- **Sequência, não dias fixos.** Se o usuário falta, o próximo treino continua sendo o que ele não fez (`proximoIndex` em `storage.ts`). Na tela Hoje ele pode escolher qualquer treino (ex.: começar pelo C no meio da semana); a sequência sugerida continua a partir do treino feito.
 - **Fase de adaptação:** semanas 1 e 2 com 2 séries por exercício (`SEMANAS_ADAPTACAO`, `SERIES_ADAPTACAO`).
 - **Prescrição de treino para déficit calórico:** compostos 6-12 reps com 2-3 min de descanso; isolados 10-15 reps com 60-90 s; parar a 1-2 reps da falha. Mudanças nessas faixas devem seguir `docs/plano.md`.
 - **Vídeos:** só YouTube, em português, de fisioterapeutas ou educadores físicos (padrão: canal FisioPrev). Guardar só o `videoId` e o `canal`. Embutir com `youtube-nocookie.com`. Não é possível validar vídeos pelo terminal do Claude Code na nuvem (YouTube bloqueado); confira manualmente no navegador.

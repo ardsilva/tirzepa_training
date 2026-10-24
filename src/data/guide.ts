@@ -17,9 +17,10 @@ export const guide: GuideArticle[] = [
   {
     slug: "como-usar",
     titulo: "Como usar o app",
-    resumo: "Sequência A, B, C. Faltou um dia? Continue de onde parou.",
+    resumo: "Sequência A, B, C, mas você escolhe o treino do dia.",
     paragrafos: [
       "O app segue uma sequência, não dias fixos. No plano de 3x por semana: A (Empurrar), B (Puxar), C (Perna). No de 4x, entra o D (Superior + braços).",
+      "Quer começar por outro treino, como o C no meio da semana? Toque nele na tela Hoje. A sugestão seguinte continua a partir do que você fez.",
       "Nas duas primeiras semanas você está na fase de adaptação: 2 séries por exercício, com carga confortável.",
       "RIR quer dizer \"repetições na reserva\". Pare cada série quando sentir que ainda conseguiria fazer mais 1 ou 2 repetições com boa técnica.",
       "Marque cada série ao terminar. O cronômetro de descanso começa sozinho.",
