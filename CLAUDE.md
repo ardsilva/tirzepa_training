@@ -29,7 +29,8 @@ src/
     page.tsx                 Hoje: próximo treino da sequência (redireciona p/ onboarding)
     boas-vindas/             Onboarding: aviso médico + escolha 3x/4x
     treinos/                 Lista de treinos
-    treinos/[id]/            Sessão: séries, carga, cronômetro de descanso
+    treinos/[id]/            Sessão: Começar/Encerrar, séries, carga, cronômetro de descanso
+    historico/               Treinos encerrados (data, duração, séries, cargas, anotação)
     exercicios/[id]/         Vídeo, dicas, erro comum, alternativa
     guia/ e guia/[slug]/     Artigos curtos
     famosos/ e famosos/[slug]/  Treinos de famosos adaptados (sessão em /treinos/[id])
@@ -48,6 +49,7 @@ docs/plano.md                Plano do produto
 - **Sem prescrição.** O app não indica dose de remédio, dieta, calorias nem gramas de proteína para o usuário. Pode citar referências gerais sempre dizendo para validar com nutricionista ou médico.
 - **Plano padrão: 3x por semana** (A Empurrar, B Puxar, C Perna). O 4x adiciona D (Superior + braços).
 - **Sequência, não dias fixos.** Se o usuário falta, o próximo treino continua sendo o que ele não fez (`proximoIndex` em `storage.ts`). Na tela Hoje ele pode escolher qualquer treino (ex.: começar pelo C no meio da semana); a sequência sugerida continua a partir do treino feito.
+- **Começar/Encerrar.** O treino tem início e fim. Ao encerrar, salva em `historico` (`TreinoFeito`) data, duração, séries feitas por exercício, carga e anotação. O treino em andamento fica em `tirzepa-training:sessao:<id>` para sobreviver a reload. Registros antigos podem não ter os campos novos (são opcionais).
 - **Treinos de famosos** (`src/data/famosos.ts`): só rotinas públicas com fonte, adaptadas às faixas abaixo e usando exercícios que já existem. Não entram na sequência do plano (`concluirTreino` não avança `proximoIndex`). Nunca sugerir que o famoso endossa o app.
 - **Cardio** (`src/data/cardio.ts`): zona 2 pelo teste da fala, sem HIIT; no dia de musculação, depois do treino.
 - **Fase de adaptação:** semanas 1 e 2 com 2 séries por exercício (`SEMANAS_ADAPTACAO`, `SERIES_ADAPTACAO`).

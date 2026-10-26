@@ -7,33 +7,40 @@ import { RestTimer } from "@/components/RestTimer";
 import { getExercise } from "@/data/exercises";
 import { SERIES_ADAPTACAO, tituloTreino } from "@/data/workouts";
 import type { Workout } from "@/data/types";
-import { formatDescanso, formatReps } from "@/lib/format";
-import { concluirTreino, emAdaptacao, useAppState } from "@/lib/storage";
-
-// Séries marcadas ficam salvas para o treino sobreviver a um reload no meio da academia.
-const sessaoKey = (id: string) => `tirzepa-training:sessao:${id}`;
+import { formatCronometro, formatDescanso, formatReps } from "@/lib/format";
+import {
+  apagarSessao,
+  concluirTreino,
+  emAdaptacao,
+  lerSessao,
+  salvarSessao,
+  type SessaoAtiva,
+  useAppState,
+} from "@/lib/storage";
 
 export function WorkoutSession({ workout }: { workout: Workout }) {
   const router = useRouter();
   const { state, update, carregado } = useAppState();
-  const [feitas, setFeitas] = useState<Record<string, number>>({});
+  const [sessao, setSessao] = useState<SessaoAtiva | null>(null);
   const [descansoAte, setDescansoAte] = useState<number | null>(null);
 
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(sessaoKey(workout.id));
-      if (raw) setFeitas(JSON.parse(raw));
-    } catch {}
+    setSessao(lerSessao(workout.id));
   }, [workout.id]);
 
-  function salvarFeitas(novo: Record<string, number>) {
-    setFeitas(novo);
-    try {
-      window.localStorage.setItem(sessaoKey(workout.id), JSON.stringify(novo));
-    } catch {}
+  function mudarSessao(novo: SessaoAtiva) {
+    setSessao(novo);
+    salvarSessao(workout.id, novo);
   }
 
-  if (!carregado) return null;
+  if (!carregado || !sessao) return null;
+
+  const { feitas } = sessao;
+  const comecou = sessao.inicio !== null;
+
+  function comecar() {
+    mudarSessao({ ...sessao!, inicio: new Date().toISOString() });
+  }
 
   const adaptacao = emAdaptacao(state);
   const seriesDe = (n: number) => (adaptacao ? Math.min(n, SERIES_ADAPTACAO) : n);
@@ -47,16 +54,31 @@ export function WorkoutSession({ workout }: { workout: Workout }) {
     const atual = feitas[exerciseId] ?? 0;
     // Tocar numa série já feita desmarca a partir dela.
     const novo = indice < atual ? indice : indice + 1;
-    salvarFeitas({ ...feitas, [exerciseId]: novo });
+    mudarSessao({
+      ...sessao!,
+      // Marcar uma série antes de tocar em Começar já inicia o treino.
+      inicio: sessao!.inicio ?? new Date().toISOString(),
+      feitas: { ...feitas, [exerciseId]: novo },
+    });
     if (novo > atual) setDescansoAte(Date.now() + descansoSeg * 1000);
   }
 
-  function finalizar() {
-    update((s) => concluirTreino(s, workout.id));
-    try {
-      window.localStorage.removeItem(sessaoKey(workout.id));
-    } catch {}
-    router.push("/");
+  function descartar() {
+    apagarSessao(workout.id);
+    setSessao(lerSessao(workout.id));
+    setDescansoAte(null);
+  }
+
+  function encerrar() {
+    if (concluidas === 0) {
+      if (window.confirm("Nenhuma série marcada. Descartar este treino sem salvar?")) {
+        descartar();
+      }
+      return;
+    }
+    update((s) => concluirTreino(s, workout, sessao!, seriesDe));
+    apagarSessao(workout.id);
+    router.push("/historico");
   }
 
   return (
@@ -79,6 +101,20 @@ export function WorkoutSession({ workout }: { workout: Workout }) {
           {concluidas} de {total} séries
           {adaptacao && " · fase de adaptação (2 séries, carga leve)"}
         </p>
+        {comecou ? (
+          <div className="mt-2 flex items-center justify-between rounded-2xl bg-accent/10 px-4 py-3">
+            <span className="text-sm text-accent">Treino em andamento</span>
+            <Cronometro inicio={sessao.inicio!} />
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={comecar}
+            className="mt-2 rounded-2xl bg-accent py-4 text-lg font-bold text-accent-ink"
+          >
+            Começar treino
+          </button>
+        )}
       </header>
 
       <ol className="flex flex-col gap-3">
@@ -145,17 +181,53 @@ export function WorkoutSession({ workout }: { workout: Workout }) {
         })}
       </ol>
 
-      <button
-        type="button"
-        onClick={finalizar}
-        className={`rounded-2xl py-4 text-lg font-bold ${
-          concluidas >= total ? "bg-accent text-accent-ink" : "bg-surface-2 text-foreground"
-        }`}
-      >
-        Finalizar treino
-      </button>
+      {comecou && (
+        <>
+          <label className="flex flex-col gap-2 text-sm text-muted">
+            Anotação (opcional)
+            <textarea
+              rows={2}
+              value={sessao.nota}
+              onChange={(e) => mudarSessao({ ...sessao, nota: e.target.value })}
+              placeholder="Ex.: ombro incomodou no desenvolvimento"
+              className="rounded-xl bg-surface-2 px-3 py-2 text-base text-foreground"
+            />
+          </label>
+
+          <button
+            type="button"
+            onClick={encerrar}
+            className={`rounded-2xl py-4 text-lg font-bold ${
+              concluidas >= total ? "bg-accent text-accent-ink" : "bg-surface-2 text-foreground"
+            }`}
+          >
+            Encerrar e salvar treino
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              if (window.confirm("Descartar este treino? Nada será salvo no histórico.")) descartar();
+            }}
+            className="-mt-2 min-h-11 text-sm text-muted"
+          >
+            Descartar treino
+          </button>
+        </>
+      )}
 
       <RestTimer fimEm={descansoAte} onFechar={() => setDescansoAte(null)} />
     </div>
   );
+}
+
+function Cronometro({ inicio }: { inicio: string }) {
+  const [agora, setAgora] = useState(() => Date.now());
+
+  useEffect(() => {
+    const id = window.setInterval(() => setAgora(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const seg = Math.max(0, Math.floor((agora - new Date(inicio).getTime()) / 1000));
+  return <span className="text-xl font-semibold tabular-nums text-accent">{formatCronometro(seg)}</span>;
 }
