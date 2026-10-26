@@ -28,7 +28,7 @@ export default function BoasVindas() {
         </h1>
         <p className="text-muted">
           Treinos de academia para homens de 30+ que usam ou usaram Mounjaro e
-          já treinaram alguma vez. Sem personal, com vídeo de cada exercício.
+          já treinaram alguma vez. Sem personal, com a animação de cada exercício.
         </p>
       </header>
 

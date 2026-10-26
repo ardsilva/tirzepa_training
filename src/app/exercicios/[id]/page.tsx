@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { VideoEmbed } from "@/components/VideoEmbed";
+import { ExerciseAnimation } from "@/components/ExerciseAnimation";
 import { exercises, getExercise } from "@/data/exercises";
 
 export function generateStaticParams() {
@@ -33,17 +33,18 @@ export default async function ExercicioPage({
       </Link>
       <h1 className="text-2xl font-bold leading-tight">{ex.nome}</h1>
 
-      <VideoEmbed videoId={ex.videoId} titulo={ex.nome} />
+      <ExerciseAnimation exercicio={ex} />
       <p className="-mt-3 text-xs text-muted">
-        Vídeo:{" "}
+        Imagens:{" "}
         <a
-          href={`https://www.youtube.com/watch?v=${ex.videoId}`}
+          href="https://github.com/yuhonas/free-exercise-db"
           target="_blank"
           rel="noopener noreferrer"
           className="underline"
         >
-          {ex.canal}
-        </a>
+          Free Exercise DB
+        </a>{" "}
+        (domínio público)
       </p>
 
       <section className="flex flex-col gap-2">

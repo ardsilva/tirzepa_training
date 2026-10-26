@@ -22,6 +22,7 @@
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-danger: var(--danger);
+  --animate-alternar-quadro: alternar-quadro 2.4s ease-in-out infinite;
   --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "Segoe UI", Roboto, sans-serif;
 }
@@ -41,4 +42,19 @@ body {
 /* Espaço para a barra inferior + área segura do iPhone */
 .pb-nav {
   padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+}
+
+/* Alterna os dois quadros da animação do exercício (início e fim). */
+@keyframes alternar-quadro {
+  0%,
+  35% {
+    opacity: 0;
+  }
+  50%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
