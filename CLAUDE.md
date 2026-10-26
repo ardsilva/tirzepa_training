@@ -29,7 +29,8 @@ src/
     page.tsx                 Hoje: próximo treino da sequência (redireciona p/ onboarding)
     boas-vindas/             Onboarding: aviso médico + escolha 3x/4x
     treinos/                 Lista de treinos
-    treinos/[id]/            Sessão: séries, carga, cronômetro de descanso
+    treinos/[id]/            Sessão: Começar/Encerrar, séries, carga, cronômetro de descanso
+    historico/               Treinos encerrados (data, duração, séries, cargas, anotação)
     exercicios/[id]/         Animação, dicas, erro comum, alternativa
     guia/ e guia/[slug]/     Artigos curtos
   components/                BottomNav, RestTimer, ExerciseAnimation, Disclaimer, RegisterSW
@@ -46,6 +47,7 @@ docs/plano.md                Plano do produto
 - **Sem prescrição.** O app não indica dose de remédio, dieta, calorias nem gramas de proteína para o usuário. Pode citar referências gerais sempre dizendo para validar com nutricionista ou médico.
 - **Plano padrão: 3x por semana** (A Empurrar, B Puxar, C Perna). O 4x adiciona D (Superior + braços).
 - **Sequência, não dias fixos.** Se o usuário falta, o próximo treino continua sendo o que ele não fez (`proximoIndex` em `storage.ts`). Na tela Hoje ele pode escolher qualquer treino (ex.: começar pelo C no meio da semana); a sequência sugerida continua a partir do treino feito.
+- **Começar/Encerrar.** O treino tem início e fim. Ao encerrar, salva em `historico` (`TreinoFeito`) data, duração, séries feitas por exercício, carga e anotação. O treino em andamento fica em `tirzepa-training:sessao:<id>` para sobreviver a reload. Registros antigos podem não ter os campos novos (são opcionais).
 - **Fase de adaptação:** semanas 1 e 2 com 2 séries por exercício (`SEMANAS_ADAPTACAO`, `SERIES_ADAPTACAO`).
 - **Prescrição de treino para déficit calórico:** compostos 6-12 reps com 2-3 min de descanso; isolados 10-15 reps com 60-90 s; parar a 1-2 reps da falha. Mudanças nessas faixas devem seguir `docs/plano.md`.
 - **Animações em vez de vídeos:** cada exercício mostra dois quadros (início e fim) alternando como um GIF, em `public/animacoes/<id>/0.jpg` e `1.jpg`. Fonte: [Free Exercise DB](https://github.com/yuhonas/free-exercise-db) (Unlicense, domínio público); o campo `animacao.origem` guarda a pasta de lá. Exercício parado (prancha) usa `estatica: true`. Não usar GIFs do ExerciseDB, Solinca, Technogym ou similares: são protegidos por direito autoral. Ao adicionar exercício, baixar os quadros, reduzir para 600 px e conferir visualmente se batem com o exercício.

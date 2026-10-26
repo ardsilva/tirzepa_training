@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const abas = [
   { href: "/", label: "Hoje", icon: IconHoje },
   { href: "/treinos", label: "Treinos", icon: IconTreinos },
+  { href: "/historico", label: "Histórico", icon: IconHistorico },
   { href: "/guia", label: "Guia", icon: IconGuia },
 ];
 
@@ -23,7 +24,7 @@ export function BottomNav() {
             <li key={href}>
               <Link
                 href={href}
-                className={`flex min-w-20 flex-col items-center gap-1 px-4 py-2.5 text-xs font-medium ${
+                className={`flex min-w-18 flex-col items-center gap-1 px-3 py-2.5 text-xs font-medium ${
                   ativo ? "text-accent" : "text-muted"
                 }`}
               >
@@ -60,6 +61,15 @@ function IconGuia() {
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2V5Z" />
       <path d="M8 7h6" />
+    </svg>
+  );
+}
+
+function IconHistorico() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="4" y="5" width="16" height="16" rx="2" />
+      <path d="M4 10h16M9 3v4M15 3v4M8 14l2 2 4-4" />
     </svg>
   );
 }

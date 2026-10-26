@@ -1,7 +1,7 @@
 // Service worker simples: guarda as páginas visitadas para abrir sem internet
 // na academia, incluindo as animações dos exercícios.
-const CACHE = "tirzepa-v2";
-const PRECACHE = ["/", "/treinos", "/guia", "/manifest.webmanifest"];
+const CACHE = "tirzepa-v3";
+const PRECACHE = ["/", "/treinos", "/historico", "/guia", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)));
