@@ -5,17 +5,29 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getWorkout, sequenciaPorPlano } from "@/data/workouts";
 import type { WorkoutId } from "@/data/types";
-import { emAdaptacao, proximoTreino, useAppState } from "@/lib/storage";
+import {
+  emAdaptacao,
+  lerSessao,
+  proximoTreino,
+  salvarSessao,
+  treinoEmAndamento,
+  useAppState,
+} from "@/lib/storage";
 
 export default function Hoje() {
   const router = useRouter();
   const { state, carregado } = useAppState();
   // null = segue a sugestão da sequência; o usuário pode escolher qualquer treino.
   const [escolhido, setEscolhido] = useState<WorkoutId | null>(null);
+  const [emAndamento, setEmAndamento] = useState<WorkoutId | null>(null);
 
   useEffect(() => {
     if (carregado && !state.aceitouAviso) router.replace("/boas-vindas");
   }, [carregado, state.aceitouAviso, router]);
+
+  useEffect(() => {
+    if (carregado) setEmAndamento(treinoEmAndamento(sequenciaPorPlano[state.plano]));
+  }, [carregado, state.plano]);
 
   if (!carregado || !state.aceitouAviso) return null;
 
@@ -25,8 +37,24 @@ export default function Hoje() {
   const seq = sequenciaPorPlano[state.plano];
   const ultimo = state.historico.at(-1);
 
+  function comecar() {
+    const sessao = lerSessao(workout.id);
+    if (!sessao.inicio) salvarSessao(workout.id, { ...sessao, inicio: new Date().toISOString() });
+    router.push(`/treinos/${workout.id}`);
+  }
+
   return (
     <div className="flex flex-col gap-6">
+      {emAndamento && emAndamento !== workout.id && (
+        <Link
+          href={`/treinos/${emAndamento}`}
+          className="flex items-center justify-between rounded-2xl bg-accent/10 px-4 py-3 text-accent"
+        >
+          <span className="text-sm">Treino {emAndamento} em andamento</span>
+          <span className="text-sm font-semibold">Continuar →</span>
+        </Link>
+      )}
+
       <header>
         <p className="text-sm text-muted">
           {workout.id === sugerido ? "Próximo treino" : "Treino escolhido"}
@@ -85,19 +113,27 @@ export default function Hoje() {
             Fase de adaptação: 2 séries por exercício e carga confortável.
           </p>
         )}
-        <Link
-          href={`/treinos/${workout.id}`}
+        <button
+          type="button"
+          onClick={comecar}
           className="rounded-2xl bg-accent py-4 text-center text-lg font-bold text-accent-ink"
         >
-          Começar treino {workout.id}
-        </Link>
+          {workout.id === emAndamento ? "Continuar" : "Começar"} treino {workout.id}
+        </button>
       </div>
 
-      <p className="text-sm text-muted">
-        {ultimo
-          ? `Último treino: ${ultimo.workoutId} em ${new Date(ultimo.data).toLocaleDateString("pt-BR")}. ${state.historico.length} no total.`
-          : "Nos dias sem treino, caminhe de 30 a 45 minutos."}
-      </p>
+      {ultimo ? (
+        <Link href="/historico" className="text-sm text-muted">
+          Último treino: {ultimo.workoutId} em{" "}
+          {new Date(ultimo.data).toLocaleDateString("pt-BR")}.{" "}
+          {state.historico.length} no total.{" "}
+          <span className="text-accent">Ver histórico →</span>
+        </Link>
+      ) : (
+        <p className="text-sm text-muted">
+          Nos dias sem treino, caminhe de 30 a 45 minutos.
+        </p>
+      )}
     </div>
   );
 }

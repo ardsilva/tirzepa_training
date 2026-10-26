@@ -1,7 +1,7 @@
 // Service worker simples: guarda as páginas visitadas para abrir sem internet
 // na academia. Vídeos do YouTube continuam precisando de conexão.
-const CACHE = "tirzepa-v1";
-const PRECACHE = ["/", "/treinos", "/guia", "/manifest.webmanifest"];
+const CACHE = "tirzepa-v2";
+const PRECACHE = ["/", "/treinos", "/historico", "/guia", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)));

@@ -6,13 +6,42 @@ import {
   SEMANAS_ADAPTACAO,
   sequenciaPorPlano,
 } from "@/data/workouts";
-import type { Plano, WorkoutId } from "@/data/types";
+import type { Plano, Workout, WorkoutId } from "@/data/types";
 
 // MVP sem login: tudo fica no localStorage do aparelho.
 // Na fase 2 isso migra para o Supabase (ver docs/plano.md).
 const KEY = "tirzepa-training:v1";
 
-export type TreinoFeito = { workoutId: WorkoutId; data: string };
+/** O que foi feito em um exercício numa sessão. */
+export type ExercicioFeito = {
+  exerciseId: string;
+  seriesFeitas: number;
+  seriesPrevistas: number;
+  /** Carga (kg) usada; ausente se o usuário não anotou. */
+  cargaKg?: number;
+};
+
+// Mesmo formato da futura tabela `treinos_feitos` no Supabase.
+// Registros antigos (antes do Começar/Encerrar) só têm workoutId e data.
+export type TreinoFeito = {
+  workoutId: WorkoutId;
+  /** Fim do treino (ISO). */
+  data: string;
+  /** Início do treino (ISO). */
+  inicio?: string;
+  duracaoSeg?: number;
+  exercicios?: ExercicioFeito[];
+  nota?: string;
+};
+
+/** Treino em andamento, salvo para sobreviver a um reload no meio da academia. */
+export type SessaoAtiva = {
+  /** Início (ISO); null enquanto o usuário não tocou em Começar. */
+  inicio: string | null;
+  /** Séries marcadas por exercício. */
+  feitas: Record<string, number>;
+  nota: string;
+};
 
 export type AppState = {
   aceitouAviso: boolean;
@@ -85,16 +114,73 @@ export function emAdaptacao(state: AppState, hoje = new Date()): boolean {
 
 export function concluirTreino(
   state: AppState,
-  workoutId: WorkoutId,
+  workout: Workout,
+  sessao: SessaoAtiva,
+  seriesDe: (n: number) => number,
 ): AppState {
   const seq = sequenciaPorPlano[state.plano];
-  const idx = seq.indexOf(workoutId);
-  const agora = new Date().toISOString();
+  const idx = seq.indexOf(workout.id);
+  const fim = new Date();
+  const inicio = sessao.inicio ?? fim.toISOString();
+  const exercicios: ExercicioFeito[] = workout.itens.map((item) => {
+    const seriesPrevistas = seriesDe(item.series);
+    const seriesFeitas = Math.min(sessao.feitas[item.exerciseId] ?? 0, seriesPrevistas);
+    const cargaKg = seriesFeitas > 0 ? state.cargas[item.exerciseId] : undefined;
+    return { exerciseId: item.exerciseId, seriesFeitas, seriesPrevistas, cargaKg };
+  });
+  const nota = sessao.nota.trim();
+  const registro: TreinoFeito = {
+    workoutId: workout.id,
+    data: fim.toISOString(),
+    inicio,
+    duracaoSeg: Math.max(0, Math.round((fim.getTime() - new Date(inicio).getTime()) / 1000)),
+    exercicios,
+    ...(nota ? { nota } : {}),
+  };
   return {
     ...state,
-    inicio: state.inicio ?? agora,
+    inicio: state.inicio ?? inicio,
     // Se o treino feito não era o próximo, a sequência continua a partir dele.
     proximoIndex: idx >= 0 ? idx + 1 : state.proximoIndex + 1,
-    historico: [...state.historico, { workoutId, data: agora }],
+    historico: [...state.historico, registro],
   };
+}
+
+export function removerDoHistorico(state: AppState, data: string): AppState {
+  return { ...state, historico: state.historico.filter((t) => t.data !== data) };
+}
+
+// --- Sessão em andamento (uma chave por treino) ---
+
+const sessaoKey = (id: WorkoutId) => `tirzepa-training:sessao:${id}`;
+const sessaoVazia: SessaoAtiva = { inicio: null, feitas: {}, nota: "" };
+
+export function lerSessao(id: WorkoutId): SessaoAtiva {
+  try {
+    const raw = window.localStorage.getItem(sessaoKey(id));
+    if (!raw) return sessaoVazia;
+    const dados = JSON.parse(raw);
+    // Formato antigo: só o mapa de séries feitas.
+    if (!("feitas" in dados)) return { ...sessaoVazia, feitas: dados };
+    return { ...sessaoVazia, ...dados };
+  } catch {
+    return sessaoVazia;
+  }
+}
+
+export function salvarSessao(id: WorkoutId, sessao: SessaoAtiva) {
+  try {
+    window.localStorage.setItem(sessaoKey(id), JSON.stringify(sessao));
+  } catch {}
+}
+
+export function apagarSessao(id: WorkoutId) {
+  try {
+    window.localStorage.removeItem(sessaoKey(id));
+  } catch {}
+}
+
+/** Treino já começado e ainda não encerrado, se houver. */
+export function treinoEmAndamento(ids: WorkoutId[]): WorkoutId | null {
+  return ids.find((id) => lerSessao(id).inicio !== null) ?? null;
 }
