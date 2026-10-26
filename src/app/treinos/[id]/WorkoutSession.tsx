@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ExerciseAnimation } from "@/components/ExerciseAnimation";
 import { RestTimer } from "@/components/RestTimer";
 import { getExercise } from "@/data/exercises";
 import { SERIES_ADAPTACAO, tituloTreino } from "@/data/workouts";
@@ -130,21 +131,19 @@ export function WorkoutSession({ workout }: { workout: Workout }) {
                 feitasEx >= series ? "border-accent/40 bg-accent/5" : "border-border bg-surface"
               }`}
             >
-              <div className="flex items-start justify-between gap-3">
-                <Link href={`/exercicios/${ex.id}`} className="flex-1">
+              <Link href={`/exercicios/${ex.id}`} className="flex items-center gap-3">
+                <ExerciseAnimation exercicio={ex} miniatura />
+                <div className="flex-1">
                   <p className="text-xs text-muted">{n + 1}</p>
                   <p className="font-semibold leading-snug">{ex.nome}</p>
                   <p className="text-sm text-muted">
                     {series} x {formatReps(item)} · descanso {formatDescanso(item.descansoSeg)}
                   </p>
-                </Link>
-                <Link
-                  href={`/exercicios/${ex.id}`}
-                  className="shrink-0 rounded-xl bg-surface-2 px-3 py-2 text-xs font-semibold text-accent"
-                >
-                  ▶ Vídeo
-                </Link>
-              </div>
+                </div>
+                <span className="shrink-0 text-muted" aria-hidden>
+                  ›
+                </span>
+              </Link>
 
               <div className="mt-3 flex items-center gap-2">
                 {Array.from({ length: series }, (_, i) => (

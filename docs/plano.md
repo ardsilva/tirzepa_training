@@ -2,7 +2,7 @@
 
 Versão editável e comentada: [Claude Doc do plano](https://claude.ai/artifact/KDWHY3us2GLmQVKnz1H9KA). Atualizado em 24/10/2026.
 
-Os treinos, os exercícios e os vídeos vivem no código e são a fonte da verdade:
+Os treinos, os exercícios e as animações vivem no código e são a fonte da verdade:
 `src/data/workouts.ts`, `src/data/exercises.ts` e `src/data/guide.ts`. Este arquivo explica o porquê.
 
 ## Para quem é
@@ -20,7 +20,7 @@ O remédio corta o apetite e acelera a perda de peso. Sem treino de força e pro
 | Boas-vindas | Para quem é, aviso médico com "Li e entendi", escolha 3x ou 4x | MVP |
 | Hoje | Próximo treino da sequência, duração, botão Começar | MVP |
 | Treino | Exercícios com séries x reps x descanso, marcação por série, carga | MVP |
-| Exercício | Vídeo embutido, 3 dicas, erro comum, alternativa | MVP |
+| Exercício | Animação de execução, 3 dicas, erro comum, alternativa | MVP |
 | Descanso | Cronômetro que inicia ao marcar a série | MVP |
 | Guia | 8 textos curtos | MVP |
 | Login | Link mágico (Supabase Auth) | Fase 2 |
@@ -62,9 +62,11 @@ Rotinas públicas adaptadas às regras acima (`src/data/famosos.ts`), sempre com
 - **Corpo clássico (Steve Reeves):** corpo todo, 3x/sem, reduzido de 13 para 8 exercícios.
 - **Wolverine (Hugh Jackman):** 4 dias (peito e tríceps, perna, costas, ombro e braços); o 4x5 por % de 1RM virou 3 x 6-10 com RIR 1-2.
 
-## Vídeos
+## Animações
 
-25 exercícios, 26 vídeos em português (uma alternativa). 16 do canal FisioPrev (fisioterapeuta Guilherme Stellbrink), o padrão; os demais de educadores físicos (Treino Mestre, Gymflix e outros). Canal de cada vídeo conferido em 24/10/2026. Embed via `youtube-nocookie.com`.
+Em 26/10/2026 os vídeos do YouTube foram trocados por animações no estilo dos apps de academia (Solinca, Technogym): dois quadros, início e fim do movimento, alternando em loop. As imagens vêm do [Free Exercise DB](https://github.com/yuhonas/free-exercise-db), em domínio público (Unlicense), e ficam no próprio app (`public/animacoes/`, cerca de 1,8 MB), então abrem rápido e funcionam offline. Também aparecem como miniatura na tela do treino.
+
+Fontes avaliadas e descartadas: ExerciseDB (GIFs bons, mas licença comercial paga), wger (CC-BY-SA, poucas imagens para os nossos exercícios), Solinca e Technogym (conteúdo proprietário).
 
 ## Fase 2: Supabase
 

@@ -2,7 +2,7 @@
 
 Treinos de musculação para quem usa ou usou Mounjaro: perder gordura sem perder massa magra.
 
-PWA em Next.js pensado para o iPhone: 3 treinos por semana (Empurrar, Puxar, Perna), ou 4 com Superior + braços, vídeo de cada exercício, cronômetro de descanso e um guia curto.
+PWA em Next.js pensado para o iPhone: 3 treinos por semana (Empurrar, Puxar, Perna), ou 4 com Superior + braços, animação de cada exercício, cronômetro de descanso e um guia curto.
 
 > Este app não substitui acompanhamento médico, nutricional ou de educador físico.
 
@@ -32,12 +32,12 @@ Abra http://localhost:3000. Para testar no celular na mesma rede: `npm run dev -
 
 ## Instalar no iPhone
 
-Abra a URL no **Safari** > botão **Compartilhar** > **Adicionar à Tela de Início**. O app abre em tela cheia e as páginas já visitadas funcionam sem internet (os vídeos precisam de conexão).
+Abra a URL no **Safari** > botão **Compartilhar** > **Adicionar à Tela de Início**. O app abre em tela cheia e as páginas já visitadas funcionam sem internet, inclusive as animações dos exercícios.
 
 ## Onde mexer
 
 - Treinos, séries e descanso: `src/data/workouts.ts`
-- Exercícios e vídeos: `src/data/exercises.ts`
+- Exercícios: `src/data/exercises.ts` (animações em `public/animacoes/`)
 - Textos do guia e aviso médico: `src/data/guide.ts`
 - Plano do produto: `docs/plano.md`
 - Contexto para o Claude Code: `CLAUDE.md`

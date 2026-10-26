@@ -31,11 +31,11 @@ src/
     treinos/                 Lista de treinos
     treinos/[id]/            Sessão: Começar/Encerrar, séries, carga, cronômetro de descanso
     historico/               Treinos encerrados (data, duração, séries, cargas, anotação)
-    exercicios/[id]/         Vídeo, dicas, erro comum, alternativa
+    exercicios/[id]/         Animação, dicas, erro comum, alternativa
     guia/ e guia/[slug]/     Artigos curtos
     famosos/ e famosos/[slug]/  Treinos de famosos adaptados (sessão em /treinos/[id])
     cardio/                  Opções de cardio em zona 2
-  components/                BottomNav, RestTimer, VideoEmbed, Disclaimer, RegisterSW
+  components/                BottomNav, RestTimer, ExerciseAnimation, Disclaimer, RegisterSW
   data/                      Conteúdo: exercises.ts, workouts.ts, famosos.ts, cardio.ts, guide.ts, types.ts
   lib/
     storage.ts               Estado no localStorage (hook useAppState)
@@ -54,7 +54,7 @@ docs/plano.md                Plano do produto
 - **Cardio** (`src/data/cardio.ts`): zona 2 pelo teste da fala, sem HIIT; no dia de musculação, depois do treino.
 - **Fase de adaptação:** semanas 1 e 2 com 2 séries por exercício (`SEMANAS_ADAPTACAO`, `SERIES_ADAPTACAO`).
 - **Prescrição de treino para déficit calórico:** compostos 6-12 reps com 2-3 min de descanso; isolados 10-15 reps com 60-90 s; parar a 1-2 reps da falha. Mudanças nessas faixas devem seguir `docs/plano.md`.
-- **Vídeos:** só YouTube, em português, de fisioterapeutas ou educadores físicos (padrão: canal FisioPrev). Guardar só o `videoId` e o `canal`. Embutir com `youtube-nocookie.com`. Não é possível validar vídeos pelo terminal do Claude Code na nuvem (YouTube bloqueado); confira manualmente no navegador.
+- **Animações em vez de vídeos:** cada exercício mostra dois quadros (início e fim) alternando como um GIF, em `public/animacoes/<id>/0.jpg` e `1.jpg`. Fonte: [Free Exercise DB](https://github.com/yuhonas/free-exercise-db) (Unlicense, domínio público); o campo `animacao.origem` guarda a pasta de lá. Exercício parado (prancha) usa `estatica: true`. Não usar GIFs do ExerciseDB, Solinca, Technogym ou similares: são protegidos por direito autoral. Ao adicionar exercício, baixar os quadros, reduzir para 600 px e conferir visualmente se batem com o exercício.
 - **Idioma:** toda a interface e o conteúdo em português do Brasil. Nomes de variáveis do domínio também em português (`series`, `descansoSeg`, `feitas`), código de infraestrutura em inglês.
 
 ## Convenções de código
