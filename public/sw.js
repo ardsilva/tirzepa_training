@@ -1,6 +1,6 @@
 // Service worker simples: guarda as páginas visitadas para abrir sem internet
-// na academia. Vídeos do YouTube continuam precisando de conexão.
-const CACHE = "tirzepa-v1";
+// na academia, incluindo as animações dos exercícios.
+const CACHE = "tirzepa-v2";
 const PRECACHE = ["/", "/treinos", "/guia", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
@@ -25,8 +25,12 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Assets com hash do Next: cache primeiro.
-  if (url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/icons/")) {
+  // Assets com hash do Next e imagens: cache primeiro.
+  if (
+    url.pathname.startsWith("/_next/static/") ||
+    url.pathname.startsWith("/icons/") ||
+    url.pathname.startsWith("/animacoes/")
+  ) {
     event.respondWith(
       caches.match(request).then(
         (hit) =>

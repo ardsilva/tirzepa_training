@@ -14,9 +14,16 @@ export type Exercise = {
   id: string;
   nome: string;
   grupos: GrupoMuscular[];
-  /** ID do vídeo no YouTube (o trecho depois de `watch?v=`). */
-  videoId: string;
-  canal: string;
+  /**
+   * Animação de execução: dois quadros (início e fim) em
+   * `public/animacoes/<id>/0.jpg` e `1.jpg`, alternados na tela como um GIF.
+   */
+  animacao: {
+    /** Pasta de origem no Free Exercise DB, para conferir ou trocar a imagem. */
+    origem: string;
+    /** Mostra só o quadro final (exercícios parados, como a prancha). */
+    estatica?: boolean;
+  };
   dicas: string[];
   erroComum: string;
   /** Exercício para usar quando o aparelho estiver ocupado. */
