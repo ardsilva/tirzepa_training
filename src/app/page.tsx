@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getWorkout, sequenciaPorPlano } from "@/data/workouts";
+import { getTreino, getWorkout, sequenciaPorPlano, tituloTreino } from "@/data/workouts";
 import type { WorkoutId } from "@/data/types";
 import { emAdaptacao, proximoTreino, useAppState } from "@/lib/storage";
 
@@ -24,6 +24,7 @@ export default function Hoje() {
   const adaptacao = emAdaptacao(state);
   const seq = sequenciaPorPlano[state.plano];
   const ultimo = state.historico.at(-1);
+  const ultimoTreino = ultimo && getTreino(ultimo.workoutId);
 
   return (
     <div className="flex flex-col gap-6">
@@ -93,11 +94,23 @@ export default function Hoje() {
         </Link>
       </div>
 
-      <p className="text-sm text-muted">
-        {ultimo
-          ? `Último treino: ${ultimo.workoutId} em ${new Date(ultimo.data).toLocaleDateString("pt-BR")}. ${state.historico.length} no total.`
-          : "Nos dias sem treino, caminhe de 30 a 45 minutos."}
-      </p>
+      {ultimo && (
+        <p className="text-sm text-muted">
+          Último treino: {ultimoTreino ? tituloTreino(ultimoTreino) : ultimo.workoutId} em{" "}
+          {new Date(ultimo.data).toLocaleDateString("pt-BR")}. {state.historico.length} no total.
+        </p>
+      )}
+
+      <div className="grid grid-cols-2 gap-3">
+        <Link href="/cardio" className="rounded-2xl border border-border bg-surface p-4">
+          <p className="font-semibold">Cardio</p>
+          <p className="text-sm text-muted">Para os dias sem musculação</p>
+        </Link>
+        <Link href="/famosos" className="rounded-2xl border border-border bg-surface p-4">
+          <p className="font-semibold">Treinos de famosos</p>
+          <p className="text-sm text-muted">Arnold, Reeves, Wolverine</p>
+        </Link>
+      </div>
     </div>
   );
 }

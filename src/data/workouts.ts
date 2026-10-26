@@ -1,3 +1,4 @@
+import { programasFamosos } from "./famosos";
 import type { Plano, Workout, WorkoutId } from "./types";
 
 // Regras de prescrição (ver docs/plano.md):
@@ -80,4 +81,21 @@ export const workoutsById: Record<WorkoutId, Workout> = Object.fromEntries(
 
 export function getWorkout(id: string): Workout | undefined {
   return workoutsById[id as WorkoutId];
+}
+
+/** Treinos de famosos ficam fora da sequência do plano. */
+export const treinosFamosos: Workout[] = programasFamosos.flatMap((p) => p.treinos);
+
+/** Busca um treino do plano (A-D) ou de famoso. */
+export function getTreino(id: string): Workout | undefined {
+  return getWorkout(id) ?? treinosFamosos.find((w) => w.id === id);
+}
+
+export function ehDoPlano(id: string): boolean {
+  return id in workoutsById;
+}
+
+/** "A · Empurrar" no plano; só o nome nos treinos de famosos. */
+export function tituloTreino(workout: Workout): string {
+  return ehDoPlano(workout.id) ? `${workout.id} · ${workout.nome}` : workout.nome;
 }

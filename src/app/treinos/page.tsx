@@ -31,6 +31,26 @@ export default function Treinos() {
           </li>
         ))}
       </ul>
+
+      <h2 className="mt-2 text-xl font-bold">Mais opções</h2>
+      <ul className="flex flex-col gap-3">
+        <li>
+          <Link href="/famosos" className="block rounded-2xl border border-border bg-surface p-4">
+            <p className="font-semibold">Treinos de famosos</p>
+            <p className="text-sm text-muted">
+              Arnold, Steve Reeves e Wolverine, adaptados para treinar sozinho
+            </p>
+          </Link>
+        </li>
+        <li>
+          <Link href="/cardio" className="block rounded-2xl border border-border bg-surface p-4">
+            <p className="font-semibold">Cardio</p>
+            <p className="text-sm text-muted">
+              Esteira inclinada, bike, elíptico e caminhada, sem perder massa magra
+            </p>
+          </Link>
+        </li>
+      </ul>
     </div>
   );
 }

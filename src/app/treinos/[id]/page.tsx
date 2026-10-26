@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
-import { getWorkout, workouts } from "@/data/workouts";
+import { getTreino, tituloTreino, treinosFamosos, workouts } from "@/data/workouts";
 import { WorkoutSession } from "./WorkoutSession";
 
 export function generateStaticParams() {
-  return workouts.map((w) => ({ id: w.id }));
+  return [...workouts, ...treinosFamosos].map((w) => ({ id: w.id }));
 }
 
 export async function generateMetadata({
@@ -12,8 +12,8 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const w = getWorkout(id);
-  return { title: w ? `Treino ${w.id} · ${w.nome}` : "Treino" };
+  const w = getTreino(id);
+  return { title: w ? `Treino ${tituloTreino(w)}` : "Treino" };
 }
 
 export default async function TreinoPage({
@@ -22,7 +22,7 @@ export default async function TreinoPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const workout = getWorkout(id);
+  const workout = getTreino(id);
   if (!workout) notFound();
   return <WorkoutSession workout={workout} />;
 }

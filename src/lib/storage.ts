@@ -12,7 +12,8 @@ import type { Plano, WorkoutId } from "@/data/types";
 // Na fase 2 isso migra para o Supabase (ver docs/plano.md).
 const KEY = "tirzepa-training:v1";
 
-export type TreinoFeito = { workoutId: WorkoutId; data: string };
+/** `workoutId` é "A" a "D" no plano ou o id de um treino de famoso. */
+export type TreinoFeito = { workoutId: string; data: string };
 
 export type AppState = {
   aceitouAviso: boolean;
@@ -85,16 +86,17 @@ export function emAdaptacao(state: AppState, hoje = new Date()): boolean {
 
 export function concluirTreino(
   state: AppState,
-  workoutId: WorkoutId,
+  workoutId: string,
 ): AppState {
   const seq = sequenciaPorPlano[state.plano];
-  const idx = seq.indexOf(workoutId);
+  const idx = seq.indexOf(workoutId as WorkoutId);
   const agora = new Date().toISOString();
   return {
     ...state,
     inicio: state.inicio ?? agora,
     // Se o treino feito não era o próximo, a sequência continua a partir dele.
-    proximoIndex: idx >= 0 ? idx + 1 : state.proximoIndex + 1,
+    // Treino de famoso (fora do plano) não mexe na sequência.
+    proximoIndex: idx >= 0 ? idx + 1 : state.proximoIndex,
     historico: [...state.historico, { workoutId, data: agora }],
   };
 }
