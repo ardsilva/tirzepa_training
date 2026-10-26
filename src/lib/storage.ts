@@ -24,7 +24,8 @@ export type ExercicioFeito = {
 // Mesmo formato da futura tabela `treinos_feitos` no Supabase.
 // Registros antigos (antes do Começar/Encerrar) só têm workoutId e data.
 export type TreinoFeito = {
-  workoutId: WorkoutId;
+  /** "A" a "D" no plano ou o id de um treino de famoso. */
+  workoutId: string;
   /** Fim do treino (ISO). */
   data: string;
   /** Início do treino (ISO). */
@@ -119,7 +120,7 @@ export function concluirTreino(
   seriesDe: (n: number) => number,
 ): AppState {
   const seq = sequenciaPorPlano[state.plano];
-  const idx = seq.indexOf(workout.id);
+  const idx = seq.indexOf(workout.id as WorkoutId);
   const fim = new Date();
   const inicio = sessao.inicio ?? fim.toISOString();
   const exercicios: ExercicioFeito[] = workout.itens.map((item) => {
@@ -141,7 +142,8 @@ export function concluirTreino(
     ...state,
     inicio: state.inicio ?? inicio,
     // Se o treino feito não era o próximo, a sequência continua a partir dele.
-    proximoIndex: idx >= 0 ? idx + 1 : state.proximoIndex + 1,
+    // Treino de famoso (fora do plano) não mexe na sequência.
+    proximoIndex: idx >= 0 ? idx + 1 : state.proximoIndex,
     historico: [...state.historico, registro],
   };
 }
@@ -152,10 +154,10 @@ export function removerDoHistorico(state: AppState, data: string): AppState {
 
 // --- Sessão em andamento (uma chave por treino) ---
 
-const sessaoKey = (id: WorkoutId) => `tirzepa-training:sessao:${id}`;
+const sessaoKey = (id: string) => `tirzepa-training:sessao:${id}`;
 const sessaoVazia: SessaoAtiva = { inicio: null, feitas: {}, nota: "" };
 
-export function lerSessao(id: WorkoutId): SessaoAtiva {
+export function lerSessao(id: string): SessaoAtiva {
   try {
     const raw = window.localStorage.getItem(sessaoKey(id));
     if (!raw) return sessaoVazia;
@@ -168,19 +170,19 @@ export function lerSessao(id: WorkoutId): SessaoAtiva {
   }
 }
 
-export function salvarSessao(id: WorkoutId, sessao: SessaoAtiva) {
+export function salvarSessao(id: string, sessao: SessaoAtiva) {
   try {
     window.localStorage.setItem(sessaoKey(id), JSON.stringify(sessao));
   } catch {}
 }
 
-export function apagarSessao(id: WorkoutId) {
+export function apagarSessao(id: string) {
   try {
     window.localStorage.removeItem(sessaoKey(id));
   } catch {}
 }
 
 /** Treino já começado e ainda não encerrado, se houver. */
-export function treinoEmAndamento(ids: WorkoutId[]): WorkoutId | null {
+export function treinoEmAndamento(ids: string[]): string | null {
   return ids.find((id) => lerSessao(id).inicio !== null) ?? null;
 }

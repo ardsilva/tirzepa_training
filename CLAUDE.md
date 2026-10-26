@@ -33,8 +33,10 @@ src/
     historico/               Treinos encerrados (data, duração, séries, cargas, anotação)
     exercicios/[id]/         Animação, dicas, erro comum, alternativa
     guia/ e guia/[slug]/     Artigos curtos
+    famosos/ e famosos/[slug]/  Treinos de famosos adaptados (sessão em /treinos/[id])
+    cardio/                  Opções de cardio em zona 2
   components/                BottomNav, RestTimer, ExerciseAnimation, Disclaimer, RegisterSW
-  data/                      Conteúdo: exercises.ts, workouts.ts, guide.ts, types.ts
+  data/                      Conteúdo: exercises.ts, workouts.ts, famosos.ts, cardio.ts, guide.ts, types.ts
   lib/
     storage.ts               Estado no localStorage (hook useAppState)
     format.ts                Formatação de reps, descanso, timer
@@ -48,6 +50,8 @@ docs/plano.md                Plano do produto
 - **Plano padrão: 3x por semana** (A Empurrar, B Puxar, C Perna). O 4x adiciona D (Superior + braços).
 - **Sequência, não dias fixos.** Se o usuário falta, o próximo treino continua sendo o que ele não fez (`proximoIndex` em `storage.ts`). Na tela Hoje ele pode escolher qualquer treino (ex.: começar pelo C no meio da semana); a sequência sugerida continua a partir do treino feito.
 - **Começar/Encerrar.** O treino tem início e fim. Ao encerrar, salva em `historico` (`TreinoFeito`) data, duração, séries feitas por exercício, carga e anotação. O treino em andamento fica em `tirzepa-training:sessao:<id>` para sobreviver a reload. Registros antigos podem não ter os campos novos (são opcionais).
+- **Treinos de famosos** (`src/data/famosos.ts`): só rotinas públicas com fonte, adaptadas às faixas abaixo e usando exercícios que já existem. Não entram na sequência do plano (`concluirTreino` não avança `proximoIndex`). Nunca sugerir que o famoso endossa o app.
+- **Cardio** (`src/data/cardio.ts`): zona 2 pelo teste da fala, sem HIIT; no dia de musculação, depois do treino.
 - **Fase de adaptação:** semanas 1 e 2 com 2 séries por exercício (`SEMANAS_ADAPTACAO`, `SERIES_ADAPTACAO`).
 - **Prescrição de treino para déficit calórico:** compostos 6-12 reps com 2-3 min de descanso; isolados 10-15 reps com 60-90 s; parar a 1-2 reps da falha. Mudanças nessas faixas devem seguir `docs/plano.md`.
 - **Animações em vez de vídeos:** cada exercício mostra dois quadros (início e fim) alternando como um GIF, em `public/animacoes/<id>/0.jpg` e `1.jpg`. Fonte: [Free Exercise DB](https://github.com/yuhonas/free-exercise-db) (Unlicense, domínio público); o campo `animacao.origem` guarda a pasta de lá. Exercício parado (prancha) usa `estatica: true`. Não usar GIFs do ExerciseDB, Solinca, Technogym ou similares: são protegidos por direito autoral. Ao adicionar exercício, baixar os quadros, reduzir para 600 px e conferir visualmente se batem com o exercício.

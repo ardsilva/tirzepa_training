@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { getExercise } from "@/data/exercises";
-import { getWorkout } from "@/data/workouts";
+import { getTreino, tituloTreino } from "@/data/workouts";
 import { formatDuracao } from "@/lib/format";
 import { removerDoHistorico, type TreinoFeito, useAppState } from "@/lib/storage";
 
@@ -60,7 +60,7 @@ export function Historico() {
 }
 
 function Registro({ treino, onApagar }: { treino: TreinoFeito; onApagar: () => void }) {
-  const workout = getWorkout(treino.workoutId);
+  const workout = getTreino(treino.workoutId);
   const fim = new Date(treino.data);
   const inicio = treino.inicio ? new Date(treino.inicio) : null;
   const exercicios = treino.exercicios ?? [];
@@ -73,7 +73,7 @@ function Registro({ treino, onApagar }: { treino: TreinoFeito; onApagar: () => v
         <div className="flex flex-col gap-0.5">
           <p className="text-xs text-muted">{maiuscula(formatoData.format(fim))}</p>
           <p className="font-semibold">
-            {treino.workoutId} · {workout?.nome ?? "Treino"}
+            {workout ? tituloTreino(workout) : treino.workoutId}
           </p>
           <p className="text-sm text-muted">
             {inicio && `${formatoHora.format(inicio)} às ${formatoHora.format(fim)}`}

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { ExerciseAnimation } from "@/components/ExerciseAnimation";
 import { RestTimer } from "@/components/RestTimer";
 import { getExercise } from "@/data/exercises";
-import { SERIES_ADAPTACAO } from "@/data/workouts";
+import { SERIES_ADAPTACAO, tituloTreino } from "@/data/workouts";
 import type { Workout } from "@/data/types";
 import { formatCronometro, formatDescanso, formatReps } from "@/lib/format";
 import {
@@ -89,7 +89,7 @@ export function WorkoutSession({ workout }: { workout: Workout }) {
           ← Treinos
         </Link>
         <h1 className="text-3xl font-bold">
-          {workout.id} · {workout.nome}
+          {tituloTreino(workout)}
         </h1>
         <p className="text-muted">{workout.foco}</p>
         <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface-2">

@@ -63,6 +63,7 @@ export const guide: GuideArticle[] = [
     paragrafos: [
       "Nos dias sem treino, caminhe de 30 a 45 minutos ou busque 8 a 10 mil passos.",
       "Cardio muito intenso, comendo pouco, rouba a recuperação que o músculo precisa para o treino de força.",
+      "Quer variar? Na aba Treinos, em Cardio, tem esteira inclinada, bike e elíptico em zona 2, com o passo a passo.",
     ],
   },
   {

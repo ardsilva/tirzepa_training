@@ -45,7 +45,8 @@ export type WorkoutItem = {
 };
 
 export type Workout = {
-  id: WorkoutId;
+  /** "A" a "D" no plano do app; slug nos treinos de famosos. */
+  id: string;
   nome: string;
   foco: string;
   duracaoMin: number;
@@ -59,4 +60,28 @@ export type GuideArticle = {
   titulo: string;
   resumo: string;
   paragrafos: string[];
+};
+
+export type ProgramaFamoso = {
+  slug: string;
+  nome: string;
+  famoso: string;
+  resumo: string;
+  frequencia: string;
+  /** De onde veio o treino original, em 1 ou 2 frases. */
+  origem: string;
+  /** O que mudamos no original e por quê. */
+  adaptacoes: string[];
+  fonte: { titulo: string; url: string };
+  treinos: Workout[];
+};
+
+export type Cardio = {
+  id: string;
+  nome: string;
+  duracao: string;
+  intensidade: string;
+  quando: string;
+  comoFazer: string[];
+  erroComum: string;
 };

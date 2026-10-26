@@ -36,7 +36,7 @@ O remédio corta o apetite e acelera a perda de peso. Sem treino de força e pro
 - **Progressão dupla:** bateu o topo da faixa em todas as séries, sobe 2 a 5 kg. Em déficit, manter a carga já é vitória.
 - **Máquinas e halteres** de preferência: menos técnica exigida, mais segurança sem personal.
 - **Adaptação:** semanas 1 e 2 com 2 séries por exercício e carga confortável (RIR 3-4).
-- **Cardio:** caminhada de 30 a 45 min ou 8 a 10 mil passos. Sem HIIT pesado no início.
+- **Cardio:** caminhada de 30 a 45 min ou 8 a 10 mil passos. Sem HIIT pesado no início. Opções em zona 2 (teste da fala, sem FC) em `src/data/cardio.ts`: esteira inclinada, bike, elíptico e caminhada. Nos dias de musculação, só depois do treino e até 20 min.
 - **Proteína e água:** só referências gerais no guia, sempre "valide com seu nutricionista".
 - **Sinais para parar:** tontura, náusea forte, dor no peito, falta de ar desproporcional.
 
@@ -53,6 +53,14 @@ Sequência, não dias fixos: se o usuário faltar, o próximo treino continua se
 - **B Puxar:** costas, posterior de ombro, bíceps (6 exercícios)
 - **C Perna:** quadríceps, posterior, glúteo, panturrilha, core (7 exercícios)
 - **D Superior + braços:** só no plano 4x (6 exercícios)
+
+## Treinos de famosos
+
+Rotinas públicas adaptadas às regras acima (`src/data/famosos.ts`), sempre com os exercícios que já existem no app e com a fonte citada. Ficam fora da sequência do plano: fazer um deles não muda o próximo treino sugerido.
+
+- **Golden Six (Arnold Schwarzenegger):** corpo todo, 3x/sem, 6 exercícios.
+- **Corpo clássico (Steve Reeves):** corpo todo, 3x/sem, reduzido de 13 para 8 exercícios.
+- **Wolverine (Hugh Jackman):** 4 dias (peito e tríceps, perna, costas, ombro e braços); o 4x5 por % de 1RM virou 3 x 6-10 com RIR 1-2.
 
 ## Animações
 
