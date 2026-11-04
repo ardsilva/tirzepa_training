@@ -19,7 +19,14 @@ import {
   useAppState,
 } from "@/lib/storage";
 
-export function WorkoutSession({ workout }: { workout: Workout }) {
+export function WorkoutSession({
+  workout,
+  voltar = { href: "/treinos", texto: "← Treinos" },
+}: {
+  workout: Workout;
+  /** Para onde o link do topo leva (o assistente usa o próprio). */
+  voltar?: { href: string; texto: string };
+}) {
   const router = useRouter();
   const { state, update, carregado } = useAppState();
   const [sessao, setSessao] = useState<SessaoAtiva | null>(null);
@@ -85,8 +92,8 @@ export function WorkoutSession({ workout }: { workout: Workout }) {
   return (
     <div className="flex flex-col gap-5">
       <header className="flex flex-col gap-1">
-        <Link href="/treinos" className="text-sm text-muted">
-          ← Treinos
+        <Link href={voltar.href} className="text-sm text-muted">
+          {voltar.texto}
         </Link>
         <h1 className="text-3xl font-bold">
           {tituloTreino(workout)}

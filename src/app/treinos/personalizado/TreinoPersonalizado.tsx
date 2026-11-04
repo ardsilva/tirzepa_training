@@ -24,5 +24,5 @@ export function TreinoPersonalizado() {
       </div>
     );
   }
-  return <WorkoutSession workout={workout} />;
+  return <WorkoutSession workout={workout} voltar={{ href: "/assistente", texto: "← Assistente" }} />;
 }
