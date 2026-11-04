@@ -73,7 +73,7 @@ function Registro({ treino, onApagar }: { treino: TreinoFeito; onApagar: () => v
         <div className="flex flex-col gap-0.5">
           <p className="text-xs text-muted">{maiuscula(formatoData.format(fim))}</p>
           <p className="font-semibold">
-            {workout ? tituloTreino(workout) : treino.workoutId}
+            {workout ? tituloTreino(workout) : (treino.nome ?? treino.workoutId)}
           </p>
           <p className="text-sm text-muted">
             {inicio && `${formatoHora.format(inicio)} às ${formatoHora.format(fim)}`}

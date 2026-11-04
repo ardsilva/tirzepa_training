@@ -33,6 +33,8 @@ export type TreinoFeito = {
   duracaoSeg?: number;
   exercicios?: ExercicioFeito[];
   nota?: string;
+  /** Nome do treino quando ele não está no app (ex.: montado pelo assistente). */
+  nome?: string;
 };
 
 /** Treino em andamento, salvo para sobreviver a um reload no meio da academia. */
@@ -53,6 +55,8 @@ export type AppState = {
   historico: TreinoFeito[];
   /** Última carga usada (kg) por exercício. */
   cargas: Record<string, number>;
+  /** Treinos montados pelo assistente (os mais recentes primeiro). */
+  treinosPersonalizados: Workout[];
 };
 
 const estadoInicial: AppState = {
@@ -62,6 +66,7 @@ const estadoInicial: AppState = {
   proximoIndex: 0,
   historico: [],
   cargas: {},
+  treinosPersonalizados: [],
 };
 
 function ler(): AppState {
@@ -137,6 +142,7 @@ export function concluirTreino(
     duracaoSeg: Math.max(0, Math.round((fim.getTime() - new Date(inicio).getTime()) / 1000)),
     exercicios,
     ...(nota ? { nota } : {}),
+    ...(idx < 0 ? { nome: workout.nome } : {}),
   };
   return {
     ...state,
@@ -145,6 +151,17 @@ export function concluirTreino(
     // Treino de famoso (fora do plano) não mexe na sequência.
     proximoIndex: idx >= 0 ? idx + 1 : state.proximoIndex,
     historico: [...state.historico, registro],
+  };
+}
+
+const MAX_PERSONALIZADOS = 5;
+
+/** Guarda um treino do assistente; mantém só os mais recentes. */
+export function salvarTreinoPersonalizado(state: AppState, workout: Workout): AppState {
+  const outros = state.treinosPersonalizados.filter((w) => w.id !== workout.id);
+  return {
+    ...state,
+    treinosPersonalizados: [workout, ...outros].slice(0, MAX_PERSONALIZADOS),
   };
 }
 

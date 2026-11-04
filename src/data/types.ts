@@ -15,6 +15,11 @@ export type Exercise = {
   nome: string;
   grupos: GrupoMuscular[];
   /**
+   * Composto (várias articulações: 6-12 reps, 2-3 min de descanso) ou
+   * isolado (uma articulação: 10-15 reps, 60-90 s). Usado pelo assistente.
+   */
+  tipo: "composto" | "isolado";
+  /**
    * Animação de execução: dois quadros (início e fim) em
    * `public/animacoes/<id>/0.jpg` e `1.jpg`, alternados na tela como um GIF.
    */
