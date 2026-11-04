@@ -7,6 +7,7 @@ import {
   type RespostaAssistente,
 } from "@/lib/assistente/tipos";
 import { RESPOSTA_ALERTA, ehAlerta, validarResposta } from "@/lib/assistente/validar";
+import { LIMITE_POR_HORA, excedeuLimite, ipDe } from "@/lib/assistente/limite";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -51,6 +52,10 @@ function lerPedido(corpo: unknown): PedidoAssistente | null {
 export async function POST(req: Request) {
   const chave = process.env.GROQ_API_KEY ?? process.env.ASSISTENTE_API_KEY;
   if (!chave) return erro("O assistente ainda não foi configurado.", 503);
+
+  if (excedeuLimite(ipDe(req))) {
+    return erro(`Limite de ${LIMITE_POR_HORA} mensagens por hora atingido. Tente mais tarde ou use os treinos A, B e C.`, 429);
+  }
 
   let pedido: PedidoAssistente | null = null;
   try {
