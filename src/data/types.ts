@@ -37,6 +37,16 @@ export type Exercise = {
 
 export type WorkoutId = "A" | "B" | "C" | "D";
 
+export type Esforco = "leve" | "moderado" | "pesado";
+
+/** Atividade feita fora do plano (ex.: futebol, treino por conta). */
+export type Atividade = {
+  id: string;
+  nome: string;
+  grupos: GrupoMuscular[];
+  esforco: Esforco;
+};
+
 export type WorkoutItem = {
   exerciseId: string;
   series: number;
@@ -55,6 +65,8 @@ export type Workout = {
   nome: string;
   foco: string;
   duracaoMin: number;
+  /** Grupos que o treino mais cansa, usados na sugestão do dia. */
+  principais?: GrupoMuscular[];
   itens: WorkoutItem[];
 };
 

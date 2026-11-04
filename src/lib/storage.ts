@@ -46,6 +46,13 @@ export type SessaoAtiva = {
   nota: string;
 };
 
+/** Atividade feita fora do plano (ex.: futebol), no dia escolhido. */
+export type AtividadeFeita = {
+  atividadeId: string;
+  /** ISO: dia escolhido com a hora do registro (única, serve de chave). */
+  data: string;
+};
+
 export type AppState = {
   aceitouAviso: boolean;
   plano: Plano;
@@ -57,6 +64,8 @@ export type AppState = {
   cargas: Record<string, number>;
   /** Treinos montados pelo assistente (os mais recentes primeiro). */
   treinosPersonalizados: Workout[];
+  /** Ausente em estados antigos: tratar como []. */
+  atividades?: AtividadeFeita[];
 };
 
 const estadoInicial: AppState = {
@@ -167,6 +176,21 @@ export function salvarTreinoPersonalizado(state: AppState, workout: Workout): Ap
 
 export function removerDoHistorico(state: AppState, data: string): AppState {
   return { ...state, historico: state.historico.filter((t) => t.data !== data) };
+}
+
+/** Registra uma atividade avulsa. Não mexe na sequência de treinos. */
+export function registrarAtividade(state: AppState, atividadeId: string, dia: Date): AppState {
+  // Dia escolhido (hoje ou ontem) com a hora atual: a data fica única e serve de chave.
+  const agora = new Date();
+  const quando = new Date(dia);
+  quando.setHours(agora.getHours(), agora.getMinutes(), agora.getSeconds(), agora.getMilliseconds());
+  const registro: AtividadeFeita = { atividadeId, data: quando.toISOString() };
+  return { ...state, atividades: [...(state.atividades ?? []), registro] };
+}
+
+/** Remove a atividade com essa data (ISO). Não mexe na sequência de treinos. */
+export function removerAtividade(state: AppState, data: string): AppState {
+  return { ...state, atividades: (state.atividades ?? []).filter((a) => a.data !== data) };
 }
 
 // --- Sessão em andamento (uma chave por treino) ---

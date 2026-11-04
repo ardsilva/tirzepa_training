@@ -8,6 +8,7 @@ export const workouts: Workout[] = [
     id: "A",
     nome: "Empurrar",
     foco: "Peito, ombro e tríceps",
+    principais: ["peito", "ombro", "triceps"],
     duracaoMin: 50,
     itens: [
       { exerciseId: "supino-reto-halteres", series: 3, repsMin: 6, repsMax: 10, descansoSeg: 150 },
@@ -22,6 +23,7 @@ export const workouts: Workout[] = [
     id: "B",
     nome: "Puxar",
     foco: "Costas, posterior de ombro e bíceps",
+    principais: ["costas", "biceps"],
     duracaoMin: 50,
     itens: [
       { exerciseId: "puxada-frontal", series: 3, repsMin: 8, repsMax: 12, descansoSeg: 120 },
@@ -36,6 +38,7 @@ export const workouts: Workout[] = [
     id: "C",
     nome: "Perna",
     foco: "Quadríceps, posterior, glúteo, panturrilha e core",
+    principais: ["quadriceps", "posterior", "gluteo"],
     duracaoMin: 55,
     itens: [
       { exerciseId: "leg-press", series: 3, repsMin: 8, repsMax: 12, descansoSeg: 150 },
@@ -51,6 +54,7 @@ export const workouts: Workout[] = [
     id: "D",
     nome: "Superior + braços",
     foco: "Peito, costas, bíceps e tríceps",
+    principais: ["peito", "costas", "ombro", "biceps", "triceps"],
     duracaoMin: 45,
     itens: [
       { exerciseId: "supino-inclinado-halteres", series: 3, repsMin: 8, repsMax: 12, descansoSeg: 120 },
