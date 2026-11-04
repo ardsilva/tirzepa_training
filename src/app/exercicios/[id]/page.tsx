@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BackLink } from "@/components/BackLink";
 import { ExerciseAnimation } from "@/components/ExerciseAnimation";
 import { exercises, getExercise } from "@/data/exercises";
 
@@ -28,9 +29,7 @@ export default async function ExercicioPage({
 
   return (
     <div className="flex flex-col gap-5">
-      <Link href="/treinos" className="text-sm text-muted">
-        ← Treinos
-      </Link>
+      <BackLink fallback="/treinos">← Voltar</BackLink>
       <h1 className="text-2xl font-bold leading-tight">{ex.nome}</h1>
 
       <ExerciseAnimation exercicio={ex} />

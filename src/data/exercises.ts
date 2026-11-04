@@ -8,6 +8,7 @@ export const exercises: Exercise[] = [
     id: "supino-reto-halteres",
     nome: "Supino reto com halteres",
     grupos: ["peito", "triceps", "ombro"],
+    tipo: "composto",
     animacao: { origem: "Dumbbell_Bench_Press" },
     dicas: [
       "Escápulas encaixadas para trás e para baixo, peito alto.",
@@ -21,6 +22,7 @@ export const exercises: Exercise[] = [
     id: "supino-inclinado-maquina",
     nome: "Supino inclinado na máquina",
     grupos: ["peito", "ombro", "triceps"],
+    tipo: "composto",
     animacao: { origem: "Leverage_Incline_Chest_Press" },
     dicas: [
       "Ajuste o banco para a pegada ficar na altura do meio do peito.",
@@ -34,6 +36,7 @@ export const exercises: Exercise[] = [
     id: "desenvolvimento-halteres",
     nome: "Desenvolvimento com halteres sentado",
     grupos: ["ombro", "triceps"],
+    tipo: "composto",
     animacao: { origem: "Dumbbell_Shoulder_Press" },
     dicas: [
       "Banco quase reto (80 a 90°), lombar apoiada.",
@@ -46,6 +49,7 @@ export const exercises: Exercise[] = [
     id: "elevacao-lateral",
     nome: "Elevação lateral com halteres",
     grupos: ["ombro"],
+    tipo: "isolado",
     animacao: { origem: "Side_Lateral_Raise" },
     dicas: [
       "Cotovelos levemente flexionados durante todo o movimento.",
@@ -58,6 +62,7 @@ export const exercises: Exercise[] = [
     id: "crucifixo-maquina",
     nome: "Crucifixo na máquina (voador)",
     grupos: ["peito"],
+    tipo: "isolado",
     animacao: { origem: "Butterfly" },
     dicas: [
       "Ajuste o banco para as pegadas ficarem na altura do peito.",
@@ -70,6 +75,7 @@ export const exercises: Exercise[] = [
     id: "triceps-corda",
     nome: "Tríceps na polia com corda",
     grupos: ["triceps"],
+    tipo: "isolado",
     animacao: { origem: "Triceps_Pushdown_-_Rope_Attachment" },
     dicas: [
       "Cotovelos colados ao corpo e parados.",
@@ -85,6 +91,7 @@ export const exercises: Exercise[] = [
     id: "puxada-frontal",
     nome: "Puxada frontal na polia",
     grupos: ["costas", "biceps"],
+    tipo: "composto",
     animacao: { origem: "Wide-Grip_Lat_Pulldown" },
     dicas: [
       "Pegada um pouco mais aberta que os ombros.",
@@ -98,6 +105,7 @@ export const exercises: Exercise[] = [
     id: "remada-baixa",
     nome: "Remada baixa sentada (triângulo)",
     grupos: ["costas", "biceps"],
+    tipo: "composto",
     animacao: { origem: "Seated_Cable_Rows" },
     dicas: [
       "Coluna neutra e tronco quase parado.",
@@ -111,6 +119,7 @@ export const exercises: Exercise[] = [
     id: "remada-unilateral",
     nome: "Remada unilateral com halter (serrote)",
     grupos: ["costas", "biceps"],
+    tipo: "composto",
     animacao: { origem: "One-Arm_Dumbbell_Row" },
     dicas: [
       "Mão e joelho do mesmo lado apoiados no banco, costas retas.",
@@ -123,6 +132,7 @@ export const exercises: Exercise[] = [
     id: "face-pull",
     nome: "Face pull na polia",
     grupos: ["ombro", "costas"],
+    tipo: "isolado",
     animacao: { origem: "Face_Pull" },
     dicas: [
       "Polia na altura do rosto, corda com pegada por cima.",
@@ -135,6 +145,7 @@ export const exercises: Exercise[] = [
     id: "rosca-direta-halteres",
     nome: "Rosca direta com halteres",
     grupos: ["biceps"],
+    tipo: "isolado",
     animacao: { origem: "Dumbbell_Bicep_Curl" },
     dicas: [
       "Cotovelos parados ao lado do corpo.",
@@ -148,6 +159,7 @@ export const exercises: Exercise[] = [
     id: "rosca-martelo",
     nome: "Rosca martelo",
     grupos: ["biceps"],
+    tipo: "isolado",
     animacao: { origem: "Hammer_Curls" },
     dicas: [
       "Palmas viradas uma para a outra o tempo todo.",
@@ -162,6 +174,7 @@ export const exercises: Exercise[] = [
     id: "leg-press",
     nome: "Leg press 45°",
     grupos: ["quadriceps", "gluteo"],
+    tipo: "composto",
     animacao: { origem: "Leg_Press" },
     dicas: [
       "Pés na largura dos ombros, no meio da plataforma.",
@@ -175,6 +188,7 @@ export const exercises: Exercise[] = [
     id: "agachamento-goblet",
     nome: "Agachamento goblet com halter",
     grupos: ["quadriceps", "gluteo", "core"],
+    tipo: "composto",
     animacao: { origem: "Goblet_Squat" },
     dicas: [
       "Segure o halter colado ao peito, cotovelos para baixo.",
@@ -187,6 +201,7 @@ export const exercises: Exercise[] = [
     id: "stiff-halteres",
     nome: "Stiff com halteres",
     grupos: ["posterior", "gluteo"],
+    tipo: "composto",
     animacao: { origem: "Stiff-Legged_Dumbbell_Deadlift" },
     dicas: [
       "Joelhos levemente flexionados e parados.",
@@ -200,6 +215,7 @@ export const exercises: Exercise[] = [
     id: "cadeira-extensora",
     nome: "Cadeira extensora",
     grupos: ["quadriceps"],
+    tipo: "isolado",
     animacao: { origem: "Leg_Extensions" },
     dicas: [
       "Joelho alinhado com o eixo da máquina.",
@@ -212,6 +228,7 @@ export const exercises: Exercise[] = [
     id: "mesa-flexora",
     nome: "Mesa flexora",
     grupos: ["posterior"],
+    tipo: "isolado",
     animacao: { origem: "Lying_Leg_Curls" },
     dicas: [
       "Joelho logo depois da borda do banco.",
@@ -224,6 +241,7 @@ export const exercises: Exercise[] = [
     id: "panturrilha-em-pe",
     nome: "Panturrilha em pé na máquina",
     grupos: ["panturrilha"],
+    tipo: "isolado",
     animacao: { origem: "Standing_Calf_Raises" },
     dicas: [
       "Ponta dos pés na borda, calcanhar livre.",
@@ -237,6 +255,7 @@ export const exercises: Exercise[] = [
     id: "panturrilha-leg-press",
     nome: "Panturrilha no leg press",
     grupos: ["panturrilha"],
+    tipo: "isolado",
     animacao: { origem: "Calf_Press_On_The_Leg_Press_Machine" },
     dicas: [
       "Só a ponta dos pés na parte de baixo da plataforma.",
@@ -249,6 +268,7 @@ export const exercises: Exercise[] = [
     id: "prancha",
     nome: "Prancha abdominal",
     grupos: ["core"],
+    tipo: "isolado",
     animacao: { origem: "Plank", estatica: true },
     dicas: [
       "Cotovelos embaixo dos ombros.",
@@ -263,6 +283,7 @@ export const exercises: Exercise[] = [
     id: "supino-inclinado-halteres",
     nome: "Supino inclinado com halteres",
     grupos: ["peito", "ombro", "triceps"],
+    tipo: "composto",
     animacao: { origem: "Incline_Dumbbell_Press" },
     dicas: [
       "Banco a cerca de 30°.",
@@ -276,6 +297,7 @@ export const exercises: Exercise[] = [
     id: "remada-maquina-neutra",
     nome: "Remada na máquina (pegada neutra)",
     grupos: ["costas", "biceps"],
+    tipo: "composto",
     animacao: { origem: "Leverage_Iso_Row" },
     dicas: [
       "Peito apoiado no encosto, se a máquina tiver.",
@@ -289,6 +311,7 @@ export const exercises: Exercise[] = [
     id: "rosca-scott-maquina",
     nome: "Rosca Scott na máquina",
     grupos: ["biceps"],
+    tipo: "isolado",
     animacao: { origem: "Machine_Preacher_Curls" },
     dicas: [
       "Axilas encaixadas no topo do apoio.",
@@ -302,6 +325,7 @@ export const exercises: Exercise[] = [
     id: "triceps-testa-barra-w",
     nome: "Tríceps testa com barra W",
     grupos: ["triceps"],
+    tipo: "isolado",
     animacao: { origem: "EZ-Bar_Skullcrusher" },
     dicas: [
       "Braços apontando para o teto, cotovelos fechados.",
@@ -315,6 +339,7 @@ export const exercises: Exercise[] = [
     id: "rosca-polia-baixa",
     nome: "Rosca na polia baixa",
     grupos: ["biceps"],
+    tipo: "isolado",
     animacao: { origem: "Standing_Biceps_Cable_Curl" },
     dicas: [
       "Fique um passo à frente da polia.",
@@ -327,6 +352,7 @@ export const exercises: Exercise[] = [
     id: "triceps-frances-halter",
     nome: "Tríceps francês sentado com halter",
     grupos: ["triceps"],
+    tipo: "isolado",
     animacao: { origem: "Seated_Triceps_Press" },
     dicas: [
       "Sente com a lombar apoiada.",

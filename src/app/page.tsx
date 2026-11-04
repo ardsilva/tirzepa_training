@@ -133,6 +133,21 @@ export default function Hoje() {
         </button>
       </div>
 
+      <Link
+        href="/assistente"
+        className="flex min-h-11 items-center justify-between rounded-2xl border border-accent/40 bg-accent/5 p-4"
+      >
+        <span>
+          <span className="block font-semibold">Montar treino com IA</span>
+          <span className="block text-sm text-muted">
+            &quot;Quero treinar braço&quot;, &quot;só tenho 30 minutos&quot;, dúvidas de execução
+          </span>
+        </span>
+        <span className="text-accent" aria-hidden>
+          →
+        </span>
+      </Link>
+
       {ultimo ? (
         <Link href="/historico" className="text-sm text-muted">
           Último treino: {ultimoTreino ? tituloTreino(ultimoTreino) : ultimo.workoutId} em{" "}
