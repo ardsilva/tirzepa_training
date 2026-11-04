@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { atividades } from "@/data/atividades";
 import {
   getTreino,
   getWorkout,
@@ -11,10 +12,12 @@ import {
   treinosFamosos,
 } from "@/data/workouts";
 import type { WorkoutId } from "@/data/types";
+import { diasEntre, sugestaoDoDia, ultimosDias } from "@/lib/recuperacao";
 import {
   emAdaptacao,
   lerSessao,
   proximoTreino,
+  registrarAtividade,
   salvarSessao,
   treinoEmAndamento,
   useAppState,
@@ -22,10 +25,12 @@ import {
 
 export default function Hoje() {
   const router = useRouter();
-  const { state, carregado } = useAppState();
-  // null = segue a sugestão da sequência; o usuário pode escolher qualquer treino.
+  const { state, update, carregado } = useAppState();
+  // null = segue a sugestão do dia; o usuário pode escolher qualquer treino.
   const [escolhido, setEscolhido] = useState<WorkoutId | null>(null);
   const [emAndamento, setEmAndamento] = useState<string | null>(null);
+  const [registrando, setRegistrando] = useState(false);
+  const [diaAtividade, setDiaAtividade] = useState<"hoje" | "ontem">("hoje");
 
   useEffect(() => {
     if (carregado && !state.aceitouAviso) router.replace("/boas-vindas");
@@ -40,18 +45,29 @@ export default function Hoje() {
   if (!carregado || !state.aceitouAviso) return null;
 
   const sugerido = proximoTreino(state);
-  const workout = getWorkout(escolhido ?? sugerido)!;
+  const sugestao = sugestaoDoDia(state);
+  const padrao: WorkoutId = sugestao.tipo === "treino" ? sugestao.workoutId : sugerido;
+  const workout = getWorkout(escolhido ?? padrao)!;
+  const eSugestao = sugestao.tipo === "treino" && workout.id === sugestao.workoutId;
   const adaptacao = emAdaptacao(state);
   const seq = sequenciaPorPlano[state.plano];
   const ultimo = state.historico.at(-1);
   const ultimoTreino = ultimo && getTreino(ultimo.workoutId);
   const treinoAndamento = emAndamento ? getTreino(emAndamento) : undefined;
   const tituloAndamento = treinoAndamento ? tituloTreino(treinoAndamento) : emAndamento;
+  const recentes = ultimosDias(state);
 
   function comecar() {
     const sessao = lerSessao(workout.id);
     if (!sessao.inicio) salvarSessao(workout.id, { ...sessao, inicio: new Date().toISOString() });
     router.push(`/treinos/${workout.id}`);
+  }
+
+  function registrar(atividadeId: string) {
+    const dia = new Date();
+    if (diaAtividade === "ontem") dia.setDate(dia.getDate() - 1);
+    update((s) => registrarAtividade(s, atividadeId, dia));
+    setRegistrando(false);
   }
 
   return (
@@ -66,9 +82,31 @@ export default function Hoje() {
         </Link>
       )}
 
+      <section className="flex flex-col gap-2 rounded-3xl border border-border bg-surface p-5">
+        <p className="text-sm text-muted">Sugestão de hoje</p>
+        {sugestao.tipo === "descanso" && (
+          <p className="text-lg font-bold">Descanso ou caminhada</p>
+        )}
+        <p>{sugestao.motivo}</p>
+        {sugestao.tipo === "descanso" && (
+          <>
+            <Link href="/cardio" className="inline-flex min-h-11 items-center self-start text-sm font-semibold text-accent">
+              Ver opções de cardio →
+            </Link>
+            <p className="text-sm text-muted">
+              Quer treinar mesmo assim? Escolha o treino abaixo.
+            </p>
+          </>
+        )}
+      </section>
+
       <header>
         <p className="text-sm text-muted">
-          {workout.id === sugerido ? "Próximo treino" : "Treino escolhido"}
+          {eSugestao
+            ? "Treino sugerido"
+            : escolhido === null
+              ? "Próximo da sequência"
+              : "Treino escolhido"}
         </p>
         <h1 className="text-3xl font-bold">
           {workout.id} · {workout.nome}
@@ -95,7 +133,7 @@ export default function Hoje() {
                 }`}
               >
                 {id}
-                {id === sugerido && (
+                {id === padrao && (
                   <span
                     aria-hidden
                     className={`absolute -top-1 -right-1 size-3 rounded-full border-2 border-background ${
@@ -108,7 +146,7 @@ export default function Hoje() {
           })}
         </div>
         <p className="text-xs text-muted">
-          O ponto marca o sugerido pela sequência. Escolheu outro? A sequência
+          O ponto marca o sugerido para hoje. Escolheu outro? A sequência
           continua a partir dele.
         </p>
       </section>
@@ -161,6 +199,66 @@ export default function Hoje() {
         </p>
       )}
 
+      <section className="flex flex-col gap-3">
+        <h2 className="text-sm font-semibold text-muted">Fez outra coisa?</h2>
+        <button
+          type="button"
+          aria-expanded={registrando}
+          onClick={() => setRegistrando((v) => !v)}
+          className="min-h-11 rounded-2xl border border-border bg-surface px-4 py-3 text-left font-semibold"
+        >
+          Registrar atividade
+        </button>
+        {registrando && (
+          <div className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4">
+            <div className="flex gap-2" role="radiogroup" aria-label="Dia da atividade">
+              {(["hoje", "ontem"] as const).map((op) => {
+                const ativo = diaAtividade === op;
+                return (
+                  <button
+                    key={op}
+                    type="button"
+                    role="radio"
+                    aria-checked={ativo}
+                    onClick={() => setDiaAtividade(op)}
+                    className={`min-h-11 flex-1 rounded-xl text-sm font-semibold ${
+                      ativo ? "bg-accent text-accent-ink" : "bg-surface-2 text-muted"
+                    }`}
+                  >
+                    {op === "hoje" ? "Hoje" : "Ontem"}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {atividades.map((a) => (
+                <button
+                  key={a.id}
+                  type="button"
+                  onClick={() => registrar(a.id)}
+                  className="min-h-11 rounded-xl bg-surface-2 px-3 py-2 text-left text-sm font-medium"
+                >
+                  {a.nome}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+
+      {recentes.length > 0 && (
+        <section className="flex flex-col gap-2">
+          <h2 className="text-sm font-semibold text-muted">Últimos 3 dias</h2>
+          <ul className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4 text-sm">
+            {recentes.map((e) => (
+              <li key={`${e.tipo}-${e.data}`}>
+                {rotuloDia(e.data)} · {e.nome}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <div className="grid grid-cols-2 gap-3">
         <Link href="/cardio" className="rounded-2xl border border-border bg-surface p-4">
           <p className="font-semibold">Cardio</p>
@@ -173,6 +271,13 @@ export default function Hoje() {
       </div>
     </div>
   );
+}
+
+function rotuloDia(data: string): string {
+  const diff = diasEntre(new Date(data), new Date());
+  if (diff === 0) return "Hoje";
+  if (diff === 1) return "Ontem";
+  return `Há ${diff} dias`;
 }
 
 function Stat({ label, valor }: { label: string; valor: string }) {

@@ -54,6 +54,15 @@ Sequência, não dias fixos: se o usuário faltar, o próximo treino continua se
 - **C Perna:** quadríceps, posterior, glúteo, panturrilha, core (7 exercícios)
 - **D Superior + braços:** só no plano 4x (6 exercícios)
 
+## Sugestão do dia
+
+A tela Hoje sugere o treino de hoje pelo descanso dos músculos (`src/lib/recuperacao.ts`). Tudo em dias de calendário local, não em horas.
+
+- **Descanso por esforço:** pesado pede 2 dias para os grupos que trabalhou; moderado, 1 dia; leve não conta. Treino do plano conta como pesado. Um grupo está pronto quando todo esforço que o atingiu já cumpriu esse descanso.
+- **Atividades avulsas** (futebol, corrida, bike, natação, treino por conta, caminhada): `src/data/atividades.ts`. Não avançam a sequência nem mudam o próximo treino.
+- **Ordem das regras:** (1) já treinou hoje: descanso ou caminhada leve; (2) três dias seguidos de esforço: descanso ou caminhada em zona 2; (3) o primeiro treino da sequência, a partir do próximo, cujos grupos principais estão prontos; (4) nenhum pronto: descanso ou caminhada.
+- O usuário sempre pode escolher outro treino na tela Hoje.
+
 ## Treinos de famosos
 
 Rotinas públicas adaptadas às regras acima (`src/data/famosos.ts`), sempre com os exercícios que já existem no app e com a fonte citada. Ficam fora da sequência do plano: fazer um deles não muda o próximo treino sugerido.

@@ -1,10 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { getAtividade } from "@/data/atividades";
 import { getExercise } from "@/data/exercises";
 import { getTreino, tituloTreino } from "@/data/workouts";
 import { formatDuracao } from "@/lib/format";
-import { removerDoHistorico, type TreinoFeito, useAppState } from "@/lib/storage";
+import {
+  type AtividadeFeita,
+  removerAtividade,
+  removerDoHistorico,
+  type TreinoFeito,
+  useAppState,
+} from "@/lib/storage";
 
 const formatoData = new Intl.DateTimeFormat("pt-BR", {
   weekday: "short",
@@ -15,24 +22,39 @@ const formatoData = new Intl.DateTimeFormat("pt-BR", {
 const maiuscula = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 const formatoHora = new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit" });
 
+type Item =
+  | { tipo: "treino"; data: string; treino: TreinoFeito }
+  | { tipo: "atividade"; data: string; atividade: AtividadeFeita };
+
 export function Historico() {
   const { state, update, carregado } = useAppState();
   if (!carregado) return null;
 
-  const treinos = [...state.historico].reverse();
+  const atividades = state.atividades ?? [];
+  const itens: Item[] = [
+    ...state.historico.map((t): Item => ({ tipo: "treino", data: t.data, treino: t })),
+    ...atividades.map((a): Item => ({ tipo: "atividade", data: a.data, atividade: a })),
+  ].sort((a, b) => (Date.parse(b.data) || 0) - (Date.parse(a.data) || 0));
+
+  const nTreinos = state.historico.length;
+  const nAtividades = atividades.length;
+  const partes = [
+    nTreinos && `${nTreinos} ${nTreinos === 1 ? "treino" : "treinos"}`,
+    nAtividades && `${nAtividades} ${nAtividades === 1 ? "atividade" : "atividades"}`,
+  ].filter(Boolean);
 
   return (
     <div className="flex flex-col gap-5">
       <header>
         <h1 className="text-3xl font-bold">Histórico</h1>
         <p className="text-muted">
-          {treinos.length
-            ? `${treinos.length} ${treinos.length === 1 ? "treino salvo" : "treinos salvos"} neste aparelho`
+          {partes.length
+            ? `${partes.join(" e ")} salvos neste aparelho`
             : "Os treinos que você encerrar aparecem aqui."}
         </p>
       </header>
 
-      {treinos.length === 0 && (
+      {itens.length === 0 && (
         <Link
           href="/"
           className="rounded-2xl bg-accent py-4 text-center text-lg font-bold text-accent-ink"
@@ -42,19 +64,56 @@ export function Historico() {
       )}
 
       <ol className="flex flex-col gap-3">
-        {treinos.map((t) => (
-          <li key={t.data}>
-            <Registro
-              treino={t}
-              onApagar={() => {
-                if (window.confirm("Apagar este treino do histórico?")) {
-                  update((s) => removerDoHistorico(s, t.data));
-                }
-              }}
-            />
-          </li>
-        ))}
+        {itens.map((item) =>
+          item.tipo === "treino" ? (
+            <li key={`treino-${item.data}`}>
+              <Registro
+                treino={item.treino}
+                onApagar={() => {
+                  if (window.confirm("Apagar este treino do histórico?")) {
+                    update((s) => removerDoHistorico(s, item.data));
+                  }
+                }}
+              />
+            </li>
+          ) : (
+            <li key={`atividade-${item.data}-${item.atividade.atividadeId}`}>
+              <RegistroAtividade
+                atividade={item.atividade}
+                onApagar={() => {
+                  if (window.confirm("Apagar esta atividade do histórico?")) {
+                    update((s) => removerAtividade(s, item.data));
+                  }
+                }}
+              />
+            </li>
+          ),
+        )}
       </ol>
+    </div>
+  );
+}
+
+function RegistroAtividade({
+  atividade,
+  onApagar,
+}: {
+  atividade: AtividadeFeita;
+  onApagar: () => void;
+}) {
+  const atividadeCatalogo = getAtividade(atividade.atividadeId);
+  const dia = new Date(atividade.data);
+
+  return (
+    <div className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4">
+      <div className="flex flex-col gap-0.5">
+        <p className="text-xs text-muted">{maiuscula(formatoData.format(dia))}</p>
+        <p className="font-semibold">{atividadeCatalogo?.nome ?? atividade.atividadeId}</p>
+        <p className="text-sm text-muted">Atividade fora do plano</p>
+      </div>
+      <button type="button" onClick={onApagar} className="min-h-11 self-start text-sm text-danger">
+        Apagar do histórico
+      </button>
     </div>
   );
 }
